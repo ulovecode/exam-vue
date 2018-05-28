@@ -105,7 +105,9 @@
     mounted() {
       this.loading = true
       this.getstudentList()
-      this.interval = setInterval(() => {
+
+      this.interval =
+        setInterval(() => {
         this.getstudentList();
         console.log("获取数据成功")
       }, 20000)

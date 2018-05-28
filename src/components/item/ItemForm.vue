@@ -49,7 +49,7 @@
         :min="0"
         :max="maxValue">
         <!--<el-checkbox :disabled="itemForm.itemType ===''" v-for="answer in answerList" :label="answer" :key="answer">-->
-          <!--{{answer}}-->
+        <!--{{answer}}-->
         <!--</el-checkbox>-->
 
         <el-checkbox :disabled="itemForm.itemType ===''" v-for="answer in answerList" :label="answer" :key="answer">
@@ -100,7 +100,7 @@
         answerList: ['a', 'b', 'c', 'd'],
         courseList: [],
         itemForm: {
-          itemId:null,
+          itemId: null,
           difficulty: 3,
           clue: '',
           knowledge: '',
@@ -135,7 +135,7 @@
           itemType: [
             {required: true, message: '请输入试卷类型', trigger: 'blur'}
           ],
-          answer:[
+          answer: [
             {required: true, message: 'aaa', trigger: 'blur'}
           ]
         },

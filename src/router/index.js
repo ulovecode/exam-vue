@@ -1,6 +1,5 @@
-import Vue from 'vue'
+import  Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import CourseList from '@/components/course/Course'
 import CourseForm from '@/components/course/CourseForm'
 import StudentList from '@/components/student/Student'
@@ -10,16 +9,14 @@ import Item from '@/components/item/item'
 import Home from '@/components/Home'
 import PaperForm from '@/components/paper/PaperForm'
 import Paper from '@/components/paper/Paper'
+import Exam from '@/components/exam/Exam'
+
 Vue.use(Router)
 
 export default new Router({
   routes: [
 
     {
-      path: '/hello',
-      name: 'HelloWorld',
-      component: HelloWorld
-    }, {
       path: '/course',
       name: 'courselist',
       component: CourseList,
@@ -91,6 +88,11 @@ export default new Router({
         }
       ]
     },
+    {
+      path:'/exam',
+      name:'exam',
+      component:Exam,
+    }
 
 
   ]

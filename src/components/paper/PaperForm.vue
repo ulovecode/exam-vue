@@ -105,6 +105,10 @@
           this.$refs[formcname].resetFields();
         },
       getCourseData() {
+
+
+
+
         this.$http.get("/course/showlist")
           .then(res => {
             console.log(res)

@@ -1,4 +1,4 @@
-import {normalTime} from './timeFormat';
+import {normalTime,examTime} from './timeFormat';
 //
 // module.exports={
 // 	normalTime
@@ -7,5 +7,6 @@ import {normalTime} from './timeFormat';
 
 export default {
 
-  normalTime
+  normalTime,
+  examTime
 }
