@@ -8,11 +8,11 @@
     <el-card class="box-card" style="text-align:center;height: 600px">
 
       <div slot="header" class="clearfix" style="height: 100px ; text-align: left">
-        <span>{{examForm.itemList[count].question}}</span>
+        <span>{{examForm.itemList[count].question}} [{{examForm.itemList[count].itemType}}]</span>
       </div>
       <div style="text-align:left;height: 300px;margin-left: 250px">
 
-        <el-radio-group v-model="examForm.itemList[count].answer">
+        <el-radio-group v-model="examForm.itemList[count].answer" v-show="examForm.itemList[count].itemType === '单选'">
 
           <div style="height: 60px" v-if="examForm.itemList[count].optiona !== ''">
             <el-radio label="a">A.{{examForm.itemList[count].optiona}}</el-radio>
@@ -39,6 +39,33 @@
             <el-radio label="g">G.{{examForm.itemList[count].optiong}}</el-radio>
           </div>
         </el-radio-group>
+
+        <el-checkbox-group v-model="answer" v-show="examForm.itemList[count].itemType === '多选'" >
+          <div style="height: 60px" v-if="examForm.itemList[count].optiona !== ''">
+            <el-checkbox label="a">A.{{examForm.itemList[count].optiona}}</el-checkbox>
+          </div>
+          <div style="height: 60px" v-if="examForm.itemList[count].optionb !== ''">
+            <el-checkbox label="b">B.{{examForm.itemList[count].optionb}}</el-checkbox>
+          </div>
+          <div style="height: 60px" v-if="examForm.itemList[count].optionc !== ''">
+            <el-checkbox label="c">C.{{examForm.itemList[count].optionc}}</el-checkbox>
+          </div>
+          <div style="height: 60px" v-if="examForm.itemList[count].optiond !== '' ">
+            <el-checkbox label="d">D.{{examForm.itemList[count].optiond}}</el-checkbox>
+          </div>
+          <div style="height: 60px"
+               v-if="examForm.itemList[count].optione !== ''&& examForm.itemList[count].optione !== null">
+            <el-checkbox label="e">E.{{examForm.itemList[count].optione}}</el-checkbox>
+          </div>
+          <div style="height: 60px"
+               v-if="examForm.itemList[count].optionf !== '' && examForm.itemList[count].optionf !== null">
+            <el-checkbox label="f">F.{{examForm.itemList[count].optionf}}</el-checkbox>
+          </div>
+          <div style="height: 60px"
+               v-if="examForm.itemList[count].optiong !== '' && examForm.itemList[count].optiong !== null">
+            <el-checkbox label="g">G.{{examForm.itemList[count].optiong}}</el-checkbox>
+          </div>
+        </el-checkbox-group>
 
       </div>
       <div style="vertical-align: bottom;height: 200px;margin-top: 70px">
@@ -71,6 +98,7 @@
     data() {
       return {
         count: 0,
+        answer: [],
         examForm: {
           itemList: [{
             itemId: '',
@@ -136,16 +164,38 @@
     },
     methods: {
       preQuestion() {
+        console.log(this.examForm.itemList[this.count].answer)
         if (this.count - 1 < 0) {
           return
         }
-        this.count--;
+        if (this.examForm.itemList[this.count].itemType === '多选') {
+          this.examForm.itemList[this.count].answer = this.answer.join(",");
+          this.count--;
+          this.answer = this.examForm.itemList[this.count].answer.split(",");
+        } else {
+          this.count--;
+        }
+
+
       },
       nextQuestion() {
+        console.log(this.examForm.itemList[this.count].answer)
         if (this.count + 1 > this.examForm.itemList.length) {
           return
         }
-        this.count++;
+        if (this.examForm.itemList[this.count].itemType === '多选') {
+          let str = this.answer.join(",");
+          this.answer = [];
+          this.examForm.itemList[this.count].answer = str;
+          this.count++;
+
+          this.answer = this.examForm.itemList[this.count].answer.split(",")
+        } else {
+          this.count++;
+
+        }
+
+
       },
       getStudentInfo(sno) {
         this.$http.post("/student/id/" + sno)
@@ -194,8 +244,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-
-          this.$http.post("/item/showlist", this.examForm)
+          this.$http.post("/answer/save", JSON.stringify(this.examForm.itemList))
             .then((res) => {
                 if (res.code !== 0) {
                   this.$notify.error({
