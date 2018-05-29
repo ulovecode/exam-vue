@@ -39,7 +39,7 @@
       label="操作"
       width="180">
       <template slot-scope="paper">
-        <el-button type="primary" @click="startExam(paper.row.paperId)" :disabled="paper.row.testdate >= new Date()" icon="el-icon-edit" size="small" circle>开始考试</el-button>
+        <el-button type="primary" @click="startExam(paper.row.paperId)" :disabled=" paper.row.pstatus !== '正考中' " icon="el-icon-edit" size="small" circle>开始考试</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -93,7 +93,8 @@
     mounted() {
       this.getData()
       this.interval = setInterval(()=>{
-      },1000)
+        this.getData()
+      },5000)
     },
     beforeDestroy(){
       clearInterval(this.interval)

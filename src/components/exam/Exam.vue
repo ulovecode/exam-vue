@@ -235,7 +235,9 @@
       }
       if (this.$route.params.paperId != null) {
         this.getItemInfo(this.$route.params.paperId);
-        this.getPaperInfo(this.$route.params.paperId)
+        this.getPaperInfo(this.$route.params.paperId);
+      } else {
+        this.$router.push({path:'/examlist'})
       }
 
       this.interval = setInterval(() => {
@@ -243,7 +245,7 @@
         let date = new Date(this.paper.testdate);
         date.setHours(date.getHours() + 1 - 8)
         this.time = date - new Date()
-      }, 1000)
+      }, 1000);
 
 
     },
