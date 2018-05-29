@@ -23,14 +23,20 @@
           <div style="height: 60px" v-if="examForm.itemList[count].optionc !== ''">
             <el-radio label="c">C.{{examForm.itemList[count].optionc}}</el-radio>
           </div>
-          <div style="height: 60px" v-if="examForm.itemList[count].optiond !== ''">
+          <div style="height: 60px" v-if="examForm.itemList[count].optiond !== '' ">
             <el-radio label="d">D.{{examForm.itemList[count].optiond}}</el-radio>
           </div>
-          <div style="height: 60px" v-if="examForm.itemList[count].optione !== ''">
+          <div style="height: 60px"
+               v-if="examForm.itemList[count].optione !== ''&& examForm.itemList[count].optione !== null">
             <el-radio label="e">E.{{examForm.itemList[count].optione}}</el-radio>
           </div>
-          <div style="height: 60px" v-if="examForm.itemList[count].optionf !== ''">
+          <div style="height: 60px"
+               v-if="examForm.itemList[count].optionf !== '' && examForm.itemList[count].optionf !== null">
             <el-radio label="f">F.{{examForm.itemList[count].optionf}}</el-radio>
+          </div>
+          <div style="height: 60px"
+               v-if="examForm.itemList[count].optiong !== '' && examForm.itemList[count].optiong !== null">
+            <el-radio label="g">G.{{examForm.itemList[count].optiong}}</el-radio>
           </div>
         </el-radio-group>
 
@@ -58,6 +64,8 @@
 </template>
 
 <script>
+  import {normalTime} from "../../filters/timeFormat";
+
   export default {
     name: "exam",
     data() {
@@ -65,20 +73,18 @@
         count: 0,
         examForm: {
           itemList: [{
-            paperId: '',
             itemId: '',
             question: 'dasdadad',
             optiona: 'aasdas',
             optionb: 'bbbbbbbb',
             optionc: 'cccccccccccc',
             optiond: 'saddasdas',
-            optione: 'dsadsada',
+            optione: null,
             optionf: 'ffffffffffffff',
             optiong: 'sdadsa',
             answer: ''
           },
             {
-              paperId: '',
               itemId: '',
               question: 'sadoajidajidjoaijdoajodijsaojodjaojdi',
               optiona: 'aasdas',
@@ -91,7 +97,6 @@
               answer: ''
             },
             {
-              paperId: '',
               itemId: '',
               question: 'dsadsad',
               optiona: 'aasdas',
@@ -104,7 +109,6 @@
               answer: ''
             },
             {
-              paperId: '',
               itemId: '',
               question: '44444444444',
               optiona: 'aasdas',
@@ -118,10 +122,16 @@
             },
           ]
         },
-        paper: {
-          paperId: ''
+        paperAnswer: {
+          paperId: '',
+          itemId: '',
+          sno: '',
+          answer: '',
         },
         time: new Date()
+        ,
+        student: {},
+        paper: {},
       }
     },
     methods: {
@@ -137,6 +147,47 @@
         }
         this.count++;
       },
+      getStudentInfo(sno) {
+        this.$http.post("/student/id/" + sno)
+          .then(res => {
+            this.student = res.student.map(student => {
+              student.passwd = ''
+              return student
+            })
+          })
+          .catch(reason => {
+            console.log("发生错误");
+            console.log(reason);
+          })
+      },
+      getPaperInfo(paperId) {
+        this.$http.post("/paper/id/" + paperId)
+          .then(res => {
+            console.log("getPaperInfo----------")
+            console.log(res)
+            this.paper = res.data.paper;
+          })
+          .catch(reason => {
+            console.log("getPaperInfo发生错误");
+            console.log(reason.message);
+          })
+      },
+      getItemInfo(paperId) {
+        this.$http.post("/answer/presave?paperId=" + paperId)
+          .then(value => {
+            console.log(value)
+            let items = value.data.data;
+            this.examForm.itemList = items.map(item => {
+              item.answer = '';
+              return item;
+            })
+          })
+          .catch(reason => {
+              console.log("getItemInfo发生错误")
+              console.log(reason.message)
+            }
+          )
+      },
       submitForm() {
         this.$confirm('提交答案后无法更改, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -144,19 +195,19 @@
           type: 'warning'
         }).then(() => {
 
-          this.$http.post("/", this.examForm)
+          this.$http.post("/item/showlist", this.examForm)
             .then((res) => {
-                if (res.code !== 200) {
+                if (res.code !== 0) {
                   this.$notify.error({
                     title: '错误',
                     message: res.message
                   });
-
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
                 }
+
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
               }
             ).catch((error) => {
               this.$notify.error({
@@ -178,9 +229,23 @@
 
     },
     mounted() {
+      //TODO 传参应该用VUEX
+      if (this.$route.params.sno != null) {
+        this.getStudentInfo(this.$route.params.sno);
+      }
+      if (this.$route.params.paperId != null) {
+        this.getItemInfo(this.$route.params.paperId);
+        this.getPaperInfo(this.$route.params.paperId)
+      }
+
       this.interval = setInterval(() => {
-        this.time = new Date();
+        // console.log( this.paper.testdate.getHours() - new Date().getHours())
+        let date = new Date(this.paper.testdate);
+        date.setHours(date.getHours() + 1 - 8)
+        this.time = date - new Date()
       }, 1000)
+
+
     },
     beforeDestroy() {
       clearInterval(this.interval)

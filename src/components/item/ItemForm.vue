@@ -55,9 +55,9 @@
         <el-checkbox :disabled="itemForm.itemType ===''" v-for="answer in answerList" :label="answer" :key="answer">
           {{answer}}
         </el-checkbox>
-        <el-checkbox :disabled="itemForm.optionf ===''" value="f" :label="e">e</el-checkbox>
-        <el-checkbox :disabled="itemForm.optionf ===''" value="f" :label="f">f</el-checkbox>
-        <el-checkbox :disabled="itemForm.optiong ===''" value="g" :label="g">g</el-checkbox>
+        <el-checkbox :disabled="itemForm.optione ===''" value="e" label="e">e</el-checkbox>
+        <el-checkbox :disabled="itemForm.optionf ===''" value="f" label="f">f</el-checkbox>
+        <el-checkbox :disabled="itemForm.optiong ===''" value="g" label="g">g</el-checkbox>
       </el-checkbox-group>
     </el-form-item>
 

@@ -2,7 +2,7 @@
   <div id="aside">
     <el-container style="height: 100%; border: 1px  #eee">
       <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-        <el-menu :default-openeds="['1','2', '3','4']">
+        <el-menu :default-openeds="['5']">
           <el-submenu index="1">
             <template slot="title"><i class="el-icon-edit"></i>管理学生</template>
             <el-menu-item-group>
@@ -55,6 +55,17 @@
               </el-menu-item>
               <el-menu-item index="1-2">
                 <router-link to="/course" class="router-link-active">课程列表</router-link>
+              </el-menu-item>
+            </el-menu-item-group>
+
+          </el-submenu>
+          <el-submenu index="5">
+            <template slot="title"><i class="el-icon-bell"></i>考试列表</template>
+
+            <el-menu-item-group>
+              <!--<template slot="title">学生管理</template>-->
+              <el-menu-item index="1-1">
+                <router-link to="/examlist" class="router-link-active">考试列表</router-link>
               </el-menu-item>
             </el-menu-item-group>
 

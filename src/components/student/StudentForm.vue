@@ -131,9 +131,9 @@
     <el-form-item label="学生照片" prop="cname">
       <el-upload
         class="avatar-uploader"
-        action="http://localhost:8081/fileupload/img"
+        action="http://localhost:8080/fileupload/img"
         :show-file-list="false"
-        :on-success="handleAvatarSucceXss"
+        :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
         <img v-if="studentForm.pic !== ''" :src="studentForm.pic" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>

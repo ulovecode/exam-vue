@@ -36,6 +36,10 @@
             <el-button type="text" size="small">编辑</el-button>
           </router-link>
           <el-button @click="deletepaper(paper.row.paperId)" type="text" size="small">删除</el-button>
+
+
+          <el-button icon="el-icon-star-off" @click="changePaper(paper.row.paperId)"  size="small" :disabled="paper.row.pstatus !== '待审核'">启用</el-button>
+
         </template>
       </el-table-column>
     </el-table>
@@ -115,6 +119,32 @@
           });
         });
 
+      },
+      changePaper(paperId){
+
+        this.$http.get("/paper/changestatus?paperId="+paperId)
+          .then(value => {
+            console.log(value)
+            if (value.data.code !== 0) {
+              this.$notify.error({
+                title: '操作失败',
+                message: value.data.msg,
+              });
+              return
+            }
+            this.$notify({
+              title: '成功',
+              message: value.data.data,
+              type: 'success'
+            });
+            this.getPaperList()
+          })
+          .catch(reason => {
+            this.$notify.error({
+              title: '操作失败',
+              message: value.data.data.message,
+            });
+          })
       },
       getData() {
         this.$http.get("/course/showlist")
