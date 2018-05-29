@@ -6,7 +6,6 @@
           <el-submenu index="1">
             <template slot="title"><i class="el-icon-edit"></i>管理学生</template>
             <el-menu-item-group>
-              <!--<template slot="title">学生管理</template>-->
               <el-menu-item index="1-1">
                 <router-link to="/studentForm" class="router-link-active">增加学生</router-link>
               </el-menu-item>
@@ -20,7 +19,6 @@
             <template slot="title"><i class="el-icon-document"></i>管理试卷</template>
 
             <el-menu-item-group>
-              <!--<template slot="title">学生管理</template>-->
               <el-menu-item index="1-1">
                 <router-link to="/paperForm" class="router-link-active">增加试卷</router-link>
               </el-menu-item>
@@ -34,7 +32,6 @@
             <template slot="title"><i class="el-icon-tickets"></i>管理试题</template>
 
             <el-menu-item-group>
-              <!--<template slot="title">学生管理</template>-->
               <el-menu-item index="1-1">
                 <router-link to="/itemForm" class="router-link-active">增加试题</router-link>
               </el-menu-item>
@@ -47,9 +44,7 @@
 
           <el-submenu index="4">
             <template slot="title"><i class="el-icon-date"></i>管理课程</template>
-
             <el-menu-item-group>
-              <!--<template slot="title">学生管理</template>-->
               <el-menu-item index="1-1">
                 <router-link to="/courseForm" class="router-link-active">增加课程</router-link>
               </el-menu-item>
@@ -60,20 +55,15 @@
 
           </el-submenu>
           <el-submenu index="5">
-            <template slot="title"><i class="el-icon-bell"></i>考试</template>
-
+            <template slot="title"><i class="el-icon-bell"></i>学生考试</template>
             <el-menu-item-group>
-              <!--<template slot="title">学生管理</template>-->
               <el-menu-item index="1-1">
                 <router-link to="/examlist" class="router-link-active">考试列表</router-link>
               </el-menu-item>
             </el-menu-item-group>
-
           </el-submenu>
         </el-menu>
       </el-aside>
-
-
     </el-container>
 
   </div>
