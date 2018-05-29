@@ -81,9 +81,10 @@
     <div style="text-align: center">
       <el-button-group>
         <el-button type="primary" icon="el-icon-check" @click="submitForm">提交</el-button>
+        <router-link to="/examlist" class="router-link-active">
         <el-button type="danger"><i class="el-icon-close ">
-          <router-link to="/" class="router-link-active">退出</router-link>
-        </i></el-button>
+          退出
+        </i></el-button></router-link>
       </el-button-group>
     </div>
 
@@ -91,7 +92,6 @@
 </template>
 
 <script>
-  import {normalTime} from "../../filters/timeFormat";
 
   export default {
     name: "exam",
@@ -100,101 +100,37 @@
         count: 0,
         answer: [],
         examForm: {
-          itemList: [{
-            itemId: '',
-            question: 'dasdadad',
-            optiona: 'aasdas',
-            optionb: 'bbbbbbbb',
-            optionc: 'cccccccccccc',
-            optiond: 'saddasdas',
-            optione: null,
-            optionf: 'ffffffffffffff',
-            optiong: 'sdadsa',
-            answer: ''
-          },
-            {
-              itemId: '',
-              question: 'sadoajidajidjoaijdoajodijsaojodjaojdi',
-              optiona: 'aasdas',
-              optionb: 'bbbbbbbb',
-              optionc: 'cccccccccccc',
-              optiond: 'ddddddddddd',
-              optione: 'eeeeeeeeeeeee',
-              optionf: 'ffffffffffffff',
-              optiong: 'gggggggggggg',
-              answer: ''
-            },
-            {
-              itemId: '',
-              question: 'dsadsad',
-              optiona: 'aasdas',
-              optionb: 'bbbbbbbb',
-              optionc: 'cccccccccccc',
-              optiond: 'ddddddddddd',
-              optione: 'eeeeeeeeeeeee',
-              optionf: 'ffffffffffffff',
-              optiong: 'gggggggggggg',
-              answer: ''
-            },
-            {
-              itemId: '',
-              question: '44444444444',
-              optiona: 'aasdas',
-              optionb: 'bbbbbbbb',
-              optionc: 'sa',
-              optiond: 'ddddddddddd',
-              optione: 'eeedsadeeeeeeeeee',
-              optionf: 'ffffffffffffff',
-              optiong: 'gggggggggggg',
-              answer: ''
-            },
-          ]
-        },
-        paperAnswer: {
-          paperId: '',
-          itemId: '',
-          sno: '',
-          answer: '',
+          itemList: [{question:'',
+            testdate:''}]
         },
         time: new Date()
         ,
         student: {},
-        paper: {},
       }
     },
     methods: {
       preQuestion() {
-        console.log(this.examForm.itemList[this.count].answer)
         if (this.count - 1 < 0) {
           return
         }
         if (this.examForm.itemList[this.count].itemType === '多选') {
           this.examForm.itemList[this.count].answer = this.answer.join(",");
-          this.count--;
-          this.answer = this.examForm.itemList[this.count].answer.split(",");
-        } else {
-          this.count--;
         }
+        this.count--;
+        this.answer = this.examForm.itemList[this.count].answer.split(",");
 
 
       },
       nextQuestion() {
-        console.log(this.examForm.itemList[this.count].answer)
         if (this.count + 1 > this.examForm.itemList.length) {
           return
         }
         if (this.examForm.itemList[this.count].itemType === '多选') {
           let str = this.answer.join(",");
-          this.answer = [];
           this.examForm.itemList[this.count].answer = str;
-          this.count++;
-
-          this.answer = this.examForm.itemList[this.count].answer.split(",")
-        } else {
-          this.count++;
-
         }
-
+        this.count++;
+        this.answer = this.examForm.itemList[this.count].answer.split(",")
 
       },
       getStudentInfo(sno) {
@@ -225,12 +161,13 @@
       getItemInfo(paperId) {
         this.$http.post("/answer/presave?paperId=" + paperId)
           .then(value => {
-            console.log(value)
             let items = value.data.data;
             this.examForm.itemList = items.map(item => {
               item.answer = '';
               return item;
             })
+            console.log("getItemInfo----------")
+            console.log(this.examForm.itemList)
           })
           .catch(reason => {
               console.log("getItemInfo发生错误")
@@ -244,24 +181,40 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.post("/answer/save", JSON.stringify(this.examForm.itemList))
+          if (this.examForm.itemList[this.count].itemType === '多选') {
+            this.examForm.itemList[this.count].answer = this.answer.join(",");
+          }
+          console.log(this.examForm.itemList)
+          let answers = []
+          this.examForm.itemList.map(value => {
+            let answer  = {}
+            answer.answer =  value.answer
+            answer.itemId = value.itemId
+            answer.paperId = this.paper.paperId
+            answer.note = '正考'
+            answer.sno = this.student.sno
+            answers.push(answer)
+          })
+          console.log("answers-------------------")
+          console.log(answers)
+          this.$http.post("/answer/save",answers)
             .then((res) => {
-                if (res.code !== 0) {
-                  this.$notify.error({
-                    title: '错误',
-                    message: res.message
-                  });
-                }
-
+              if (res.code !== 0) {
+                this.$notify.error({
+                  title: '错误',
+                  message: res.message
+                });
+              } else {
                 this.$message({
                   type: 'success',
-                  message: '删除成功!'
+                  message: '提交成功!',
                 });
-              }
+                this.$router.push({path:'/examlist'})
+              }}
             ).catch((error) => {
               this.$notify.error({
                 title: '错误',
-                message: error.message
+                message: error.msg
               });
             }
           );

@@ -60,7 +60,7 @@
 
           </el-submenu>
           <el-submenu index="5">
-            <template slot="title"><i class="el-icon-bell"></i>考试列表</template>
+            <template slot="title"><i class="el-icon-bell"></i>考试</template>
 
             <el-menu-item-group>
               <!--<template slot="title">学生管理</template>-->
