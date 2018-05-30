@@ -28,7 +28,7 @@
           <router-link :to="{path: `/itemForm/${item.row.itemId}` }">
             <el-button type="text" size="small">编辑</el-button>
           </router-link>
-          <el-button @click="deleteitem(item.row.itemId)" type="text" size="small">删除</el-button>
+          <el-button @click="deleteItem(item.row.itemId)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,25 +74,30 @@
           console.log(err);
         });
       },
-      deleteitem(sno) {
+      deleteItem(itemId) {
         this.$confirm('此操作将永久删除该项目信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.get("/item/delete/" + sno)
+          this.$http.delete("/item/id/" + itemId)
             .then(value => {
               if (value.data.code === 0) {
                 this.$message({
                   type: 'success',
                   message: '删除成功!',
                 });
-                this.getitemList()
+                this.getitemList();
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: `删除失败${value.data.msg}`,
+                });
               }
             }).catch((err) => {
             this.$message({
-              type: err.toString(),
-              message: '已取消删除'
+              type: 'error',
+              message: '删除失败'
             });
           })
         }).catch(() => {

@@ -77,7 +77,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.get("/course/delete/" + courseId)
+          this.$http.delete("/course/id/" + courseId)
             .then(value => {
               if (value.data.code === 0) {
                 this.$message({

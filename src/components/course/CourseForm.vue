@@ -35,7 +35,7 @@
       <strong v-show="courseForm.courseId == null">
       立即创建
       </strong>
-      <strong v-show="courseForm.courseId!=null">
+      <strong v-show="courseForm.courseId != null">
       更新
       </strong>
       </el-button>
@@ -49,6 +49,7 @@
 
     data() {
       return {
+        submitType:'post',
         courseForm: {
           courseId: null,
           times: 32,
@@ -76,23 +77,40 @@
     },
     methods: {
       submitForm(formcname) {
-        // JSON.stringify(this.courseForm)
         this.$refs[formcname].validate((valid) => {
-          if (valid) {
-            this.$http.post("/course/merge",JSON.stringify(this.courseForm) )
-              .then((res)=>{
-                this.$message.success({showClose: true, message: '新增成功', duration: 2000});
-                this.$router.push({path:'/course'})
-              })
-              .catch((err)=>{
-                this.$message({
-                  type: err.toString(),
-                  message: '创建失败'
-                });
-                }
-              )
-            // alert('submit!');
 
+          if (valid) {
+            if (this.submitType === 'post') {
+              this.$http.post("/course/id", this.courseForm)
+                .then((res) => {
+                  this.$message.success({showClose: true, message: '新增成功', duration: 2000});
+                  this.$router.push({path: '/course'})
+                })
+                .catch((err) => {
+                    this.$message({
+                      type: err.toString(),
+                      message: '创建失败'
+                    });
+                  }
+                );
+            } else {
+              this.$http.put("/course/id",this.courseForm )
+                .then((res)=>{
+                  if (res.data.code === 0) {
+                    this.$message.success({showClose: true, message: '修改成功', duration: 2000});
+                    this.$router.push({path: '/course'});
+                  } else {
+                    this.$message.error({showClose: true, message: '修改失败'+res.data.msg, duration: 2000});
+                  }
+                })
+                .catch((err)=>{
+                    this.$message({
+                      type: err.toString(),
+                      message: '创建失败'
+                    });
+                  }
+                );
+            }
           } else {
             console.log('error submit!!');
           }
@@ -106,6 +124,7 @@
           .then(res => {
             console.log(res.data)
             this.courseForm = res.data['course']
+            this.submitType = 'put'
             // console.log(this.courseList)
           }).catch((err) => {
           console.log(err);

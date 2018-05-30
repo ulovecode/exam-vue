@@ -96,6 +96,7 @@
     data() {
 
       return {
+        submitType: 'post',
         answerArray: [],
         answerList: ['a', 'b', 'c', 'd'],
         courseList: [],
@@ -143,25 +144,48 @@
     },
     methods: {
       submitForm(formcname) {
-        // JSON.stringify(this.itemForm)
         this.$refs[formcname].validate((valid) => {
           if (valid) {
-            this.answerArray.sort((a, b) => a > b)
+            this.answerArray.sort((a, b) => a > b);
             this.itemForm.answer = this.answerArray.toString()
-            this.$http.post("/item/merge", JSON.stringify(this.itemForm))
-              .then((res) => {
-                console.log(res.data)
-                this.$message.success({showClose: true, message: '新增成功', duration: 2000});
-                this.$router.push({path: '/item'})
-              })
-              .catch((err) => {
-                  this.$message({
-                    type: err.toString(),
-                    message: '创建失败'
-                  });
-                }
-              );
-            // alert('submit!');
+            if (this.submitType === 'post') {
+              this.$http.post("/item/id", this.itemForm)
+                .then((res) => {
+                  console.log(res.data)
+                  if (res.data.code === 0) {
+                    this.$message.success({showClose: true, message: '新增成功', duration: 2000});
+                    this.$router.push({path: '/item'});
+                  } else {
+                    this.$message.error({showClose: true, message: '新增失败', duration: 2000});
+                  }
+                })
+                .catch((err) => {
+                    this.$message({
+                      type: 'error',
+                      message: '创建失败' + err.message
+                    });
+                  }
+                );
+            } else {
+              this.$http.put("/item/id", this.itemForm)
+                .then((res) => {
+                  console.log(res.data)
+                  if (res.data.code === 0) {
+                    this.$message.success({showClose: true, message: '新增成功', duration: 2000});
+                    this.$router.push({path: '/item'});
+                  } else {
+                    this.$message.error({showClose: true, message: '新增失败', duration: 2000});
+                  }
+                })
+                .catch((err) => {
+                    this.$message({
+                      type: 'error',
+                      message: '创建失败' + err.message
+                    });
+                  }
+                );
+            }
+
 
           } else {
             this.$message.error({showClose: true, message: '请填写试题', duration: 2000});
@@ -202,6 +226,7 @@
       this.getCourseData()
       if (this.$route.params.itemId != null) {
         this.getItem(this.$route.params.itemId);
+        this.submitType = 'put'
       }
 
     },
@@ -228,21 +253,6 @@
 
   .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
-  }
-
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
   }
 
 
