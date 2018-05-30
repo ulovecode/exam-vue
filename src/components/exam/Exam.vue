@@ -109,7 +109,9 @@
         time: new Date()
         ,
         student: {},
-        paper:{testdate:new Date()}
+        paper: {testdate: new Date()}
+        ,
+        isOver: false
       }
     },
     methods: {
@@ -172,6 +174,50 @@
           )
       },
       submitForm() {
+        if (this.isOver) {
+          if (this.examForm.itemList[this.count].itemType === '多选') {
+            this.examForm.itemList[this.count].answer = this.answer.join(",");
+          }
+          console.log(this.examForm.itemList)
+          let answers = []
+          this.examForm.itemList.map(value => {
+            let answer = {}
+            answer.answer = value.answer
+            answer.itemId = value.itemId
+            answer.paperId = this.paper.paperId
+            answer.note = '正考'
+            answer.sno = this.student.sno
+            answers.push(answer)
+          })
+          console.log("answers-------------------")
+          console.log(answers)
+          this.$http.post("/answer/save", answers)
+            .then((res) => {
+                console.log('res-------------')
+                console.log(res)
+                if (res.data.code !== 0) {
+                  this.$notify.error({
+                    title: '返回结果错误',
+                    message: res.msg
+                  });
+                } else {
+                  this.$message({
+                    type: 'success',
+                    message: '提交成功!',
+                  });
+                  this.$router.push({path: '/examlist'})
+                }
+              }
+            ).catch((error) => {
+              console.log(error)
+              this.$notify.error({
+                title: '服务器错误',
+                message: error.message
+              });
+            }
+          );
+          return
+        }
         this.$confirm('提交答案后无法更改, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -195,9 +241,9 @@
           console.log(answers)
           this.$http.post("/answer/save", answers)
             .then((res) => {
-              console.log('res-------------')
-              console.log(res)
-              if (res.data.code !== 0) {
+                console.log('res-------------')
+                console.log(res)
+                if (res.data.code !== 0) {
                   this.$notify.error({
                     title: '返回结果错误',
                     message: res.msg
@@ -218,7 +264,7 @@
               });
             }
           );
-        }).catch(() => {
+        }).catch(reason => {
           this.$message({
             type: 'info',
             message: '已取消删除'
@@ -235,7 +281,6 @@
       'getStudent',
     ]),
     mounted() {
-      //TODO 传参应该用VUEX
 
       this.getStudentInfo();
 
@@ -247,10 +292,13 @@
       }
 
       this.interval = setInterval(() => {
-        // console.log( this.paper.testdate.getHours() - new Date().getHours())
         let date = new Date(this.paper.testdate);
         date.setHours(date.getHours() + 1 - 8)
-        this.time = date - new Date()
+        this.time = date - new Date();
+        if ((new Date(-3600 * 1000 * 8) - 0) === this.time) {
+          console.log('-----------------------')
+          this.isOver = true
+        }
       }, 1000);
 
 
@@ -258,6 +306,16 @@
     beforeDestroy() {
       clearInterval(this.interval)
       console.log("销毁定时器")
+    },
+    watch: {
+      isOver: function (newIsOver, oldIsOver) {
+        console.log("-----------监听器执行了")
+        this.$notify({
+          title: '标题名称',
+          message: ('i', {style: 'color: teal'}, '考试时间结束,答案已自动提交!')
+        });
+        this.submitForm()
+      }
     }
 
   }

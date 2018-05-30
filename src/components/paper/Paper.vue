@@ -38,7 +38,7 @@
           <el-button @click="deletepaper(paper.row.paperId)" type="text" size="small">删除</el-button>
 
 
-          <el-button icon="el-icon-star-off" @click="changePaper(paper.row.paperId)"  size="small" :disabled="paper.row.pstatus !== '待审核'">启用</el-button>
+          <el-button icon="el-icon-star-off" @click="changePaper(paper)"  size="small" :disabled="paper.row.pstatus !== '待审核'">启用</el-button>
 
         </template>
       </el-table-column>
@@ -120,8 +120,8 @@
         });
 
       },
-      changePaper(paperId){
-
+      changePaper(data){
+        let paperId = data.row.paperId
         this.$http.get("/paper/changestatus?paperId="+paperId)
           .then(value => {
             console.log(value)
@@ -132,6 +132,8 @@
               });
               return
             }
+            this.paperList[data.$index].pStatus = '启用'
+            this.getpaperList();
             this.$notify({
               title: '成功',
               message: value.data.data,
@@ -142,9 +144,10 @@
           .catch(reason => {
             this.$notify.error({
               title: '操作失败',
-              message: value.data.data.message,
+              message: reason.message,
             });
           })
+
       },
       getData() {
         this.$http.get("/course/showlist")
