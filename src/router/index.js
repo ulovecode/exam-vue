@@ -11,6 +11,7 @@ import PaperForm from '@/components/paper/PaperForm'
 import Paper from '@/components/paper/Paper'
 import Exam from '@/components/exam/Exam'
 import ExamList from '@/components/exam/ExamList'
+import Login from '@/components/user/Login'
 
 Vue.use(Router)
 
@@ -98,6 +99,11 @@ export default new Router({
       path:'/examlist',
       name:'examlist',
       component:ExamList,
+    },
+    {
+      path:'/login',
+      name:'login',
+      component:Login
     }
 
 

@@ -137,7 +137,7 @@
               message: value.data.data,
               type: 'success'
             });
-            this.getPaperList()
+            // this.getPaperList()
           })
           .catch(reason => {
             this.$notify.error({

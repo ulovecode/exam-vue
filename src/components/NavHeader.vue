@@ -24,12 +24,13 @@
         </el-submenu>
       </el-submenu>
       <el-menu-item index="3"  :disabled="showheader">消息中心</el-menu-item>
-      <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
+      <el-menu-item index="4"><a href="#" target="_blank">订单管理</a></el-menu-item>
       <el-col :span="14">
           &nbsp;
       </el-col>
       <el-button type="primary" icon="el-icon-search">搜索</el-button>
-      <el-button type="danger" round>登陆/注册</el-button>
+
+      <router-link v-show="true" to="/login" class="router-link-active"><el-button type="danger" round>登陆/注册</el-button></router-link>
 
     </el-menu>
 
@@ -45,13 +46,18 @@
       return {
         showheader :false,
         activeIndex: '1',
-        activeIndex2: '1'
+        activeIndex2: '1',
+        logined:this.$store.state.logined
       };
     },
     methods: {
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       }
+
+    },
+    mounted(){
+      // console.log(this.$store.state.logined)
     }
   }
 </script>

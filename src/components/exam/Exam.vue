@@ -40,7 +40,7 @@
           </div>
         </el-radio-group>
 
-        <el-checkbox-group v-model="answer" v-show="examForm.itemList[count].itemType === '多选'" >
+        <el-checkbox-group v-model="answer" v-show="examForm.itemList[count].itemType === '多选'">
           <div style="height: 60px" v-if="examForm.itemList[count].optiona !== ''">
             <el-checkbox label="a">A.{{examForm.itemList[count].optiona}}</el-checkbox>
           </div>
@@ -82,9 +82,10 @@
       <el-button-group>
         <el-button type="primary" icon="el-icon-check" @click="submitForm">提交</el-button>
         <router-link to="/examlist" class="router-link-active">
-        <el-button type="danger"><i class="el-icon-close ">
-          退出
-        </i></el-button></router-link>
+          <el-button type="danger"><i class="el-icon-close ">
+            退出
+          </i></el-button>
+        </router-link>
       </el-button-group>
     </div>
 
@@ -92,6 +93,7 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
 
   export default {
     name: "exam",
@@ -100,12 +102,14 @@
         count: 0,
         answer: [],
         examForm: {
-          itemList: [{question:'',
-            testdate:''}]
+          itemList: [{
+            question: '',
+          }]
         },
         time: new Date()
         ,
         student: {},
+        paper:{testdate:new Date()}
       }
     },
     methods: {
@@ -133,18 +137,10 @@
         this.answer = this.examForm.itemList[this.count].answer.split(",")
 
       },
-      getStudentInfo(sno) {
-        this.$http.post("/student/id/" + sno)
-          .then(res => {
-            this.student = res.student.map(student => {
-              student.passwd = ''
-              return student
-            })
-          })
-          .catch(reason => {
-            console.log("发生错误");
-            console.log(reason);
-          })
+      getStudentInfo() {
+        console.log("getStudentInfo------")
+        this.student = this.getStudent;
+        console.log(this.student)
       },
       getPaperInfo(paperId) {
         this.$http.post("/paper/id/" + paperId)
@@ -187,8 +183,8 @@
           console.log(this.examForm.itemList)
           let answers = []
           this.examForm.itemList.map(value => {
-            let answer  = {}
-            answer.answer =  value.answer
+            let answer = {}
+            answer.answer = value.answer
             answer.itemId = value.itemId
             answer.paperId = this.paper.paperId
             answer.note = '正考'
@@ -197,24 +193,28 @@
           })
           console.log("answers-------------------")
           console.log(answers)
-          this.$http.post("/answer/save",answers)
+          this.$http.post("/answer/save", answers)
             .then((res) => {
-              if (res.code !== 0) {
-                this.$notify.error({
-                  title: '错误',
-                  message: res.message
-                });
-              } else {
-                this.$message({
-                  type: 'success',
-                  message: '提交成功!',
-                });
-                this.$router.push({path:'/examlist'})
-              }}
+              console.log('res-------------')
+              console.log(res)
+              if (res.data.code !== 0) {
+                  this.$notify.error({
+                    title: '返回结果错误',
+                    message: res.msg
+                  });
+                } else {
+                  this.$message({
+                    type: 'success',
+                    message: '提交成功!',
+                  });
+                  this.$router.push({path: '/examlist'})
+                }
+              }
             ).catch((error) => {
+              console.log(error)
               this.$notify.error({
-                title: '错误',
-                message: error.msg
+                title: '服务器错误',
+                message: error.message
               });
             }
           );
@@ -230,16 +230,20 @@
 
 
     },
+    computed: mapGetters([
+      'getUserInfo',
+      'getStudent',
+    ]),
     mounted() {
       //TODO 传参应该用VUEX
-      if (this.$route.params.sno != null) {
-        this.getStudentInfo(this.$route.params.sno);
-      }
+
+      this.getStudentInfo();
+
       if (this.$route.params.paperId != null) {
-        this.getItemInfo(this.$route.params.paperId);
         this.getPaperInfo(this.$route.params.paperId);
+        this.getItemInfo(this.$route.params.paperId);
       } else {
-        this.$router.push({path:'/examlist'})
+        this.$router.push({path: '/examlist'})
       }
 
       this.interval = setInterval(() => {
