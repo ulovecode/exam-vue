@@ -37,7 +37,7 @@
           <router-link :to="{path: `/studentForm/${student.row.sno}` }">
             <el-button type="text" size="small">编辑</el-button>
           </router-link>
-          <el-button @click="deletestudent(student.row.sno)" type="text" size="small">删除</el-button>
+          <el-button @click="deleteStudent(student.row.sno)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -60,7 +60,7 @@
       }
     },
     methods: {
-      getstudentList() {
+      getStudentList() {
         this.$http.get("/student/showlist")
           .then(res => {
             this.studentList = res.data
@@ -71,20 +71,20 @@
         });
       },
 
-      deletestudent(sno) {
+      deleteStudent(sno) {
         this.$confirm('此操作将永久删除该学生信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.get("/student/delete/" + sno)
+          this.$http.delete("/student/id/" + sno)
             .then(value => {
               if (value.data.code === 0) {
                 this.$message({
                   type: 'success',
                   message: '删除成功!',
                 });
-                this.getstudentList()
+                this.getStudentList()
               }
             }).catch((err) => {
             this.$message({
@@ -104,11 +104,11 @@
     },
     mounted() {
       this.loading = true
-      this.getstudentList()
+      this.getStudentList()
 
       this.interval =
         setInterval(() => {
-        this.getstudentList();
+        this.getStudentList();
         console.log("获取数据成功")
       }, 20000)
     },

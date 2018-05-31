@@ -69,7 +69,7 @@
         return row.pstatus === value;
       },
       getPaperList() {
-        this.$http.post("/answer/examlist")
+        this.$http.get("/answer/examlist")
           .then(value => {
             this.tableData = value.data.data
             console.log(this.tableData)

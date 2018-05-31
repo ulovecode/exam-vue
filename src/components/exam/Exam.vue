@@ -145,7 +145,7 @@
         console.log(this.student)
       },
       getPaperInfo(paperId) {
-        this.$http.post("/paper/id/" + paperId)
+        this.$http.get("/paper/id/" + paperId)
           .then(res => {
             console.log("getPaperInfo----------")
             console.log(res)
@@ -157,7 +157,7 @@
           })
       },
       getItemInfo(paperId) {
-        this.$http.post("/answer/presave?paperId=" + paperId)
+        this.$http.get("/answer/itemlist?paperId=" + paperId)
           .then(value => {
             let items = value.data.data;
             this.examForm.itemList = items.map(item => {
@@ -267,7 +267,7 @@
         }).catch(reason => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除'+reason.message
           });
         });
 

@@ -233,6 +233,7 @@
       }
 
       return {
+        submitType:'post',
         majorList: [
           {label:'计算机科学与技术',value: '计算机科学与技术'},
           {label:'会计',value: '会计'},
@@ -323,28 +324,53 @@
     },
     methods: {
       submitForm(formcname) {
-        // JSON.stringify(this.studentForm)
-        this.$refs[formcname].validate((valid) => {
-          if (valid) {
-            this.$http.post("/student/merge", JSON.stringify(this.studentForm))
-              .then((res) => {
-                console.log(res.data)
-                this.$message.success({showClose: true, message: '新增成功', duration: 2000});
-                this.$router.push({path: '/student'})
-              })
-              .catch((err) => {
-                  this.$message({
-                    type: err.toString(),
-                    message: '创建失败'
-                  });
-                }
-              );
-            // alert('submit!');
 
-          } else {
-            console.log('error submit!!');
-          }
-        });
+        if (this.submitType === 'post') {
+          this.$refs[formcname].validate((valid) => {
+            if (valid) {
+              this.$http.post("/student/id", this.studentForm)
+                .then((res) => {
+                  console.log(res.data)
+                  this.$message.success({showClose: true, message: '新增成功', duration: 2000});
+                  this.$router.push({path: '/student'})
+                })
+                .catch((err) => {
+                    this.$message({
+                      type: err.toString(),
+                      message: '创建失败'
+                    });
+                  }
+                );
+              // alert('submit!');
+
+            } else {
+              console.log('error submit!!');
+            }
+          });
+        } else {
+          this.$refs[formcname].validate((valid) => {
+            if (valid) {
+              this.$http.put("/student/id", this.studentForm)
+                .then((res) => {
+                  console.log(res.data)
+                  this.$message.success({showClose: true, message: '修改成功', duration: 2000});
+                  this.$router.push({path: '/student'})
+                })
+                .catch((err) => {
+                    this.$message({
+                      type: err.toString(),
+                      message: '修改失败失败'
+                    });
+                  }
+                );
+              // alert('submit!');
+
+            } else {
+              console.log('error submit!!');
+            }
+          });
+        }
+
       },
       resetForm(formcname) {
         this.$refs[formcname].resetFields();
@@ -381,6 +407,7 @@
     mounted() {
       if (this.$route.params.sno != null) {
         this.getstudent(this.$route.params.sno);
+        this.submitType = 'put'
       }
     }
   }

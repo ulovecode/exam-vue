@@ -97,7 +97,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.get("/paper/delete/" + paperId)
+          this.$http.delete("/paper/id/" + paperId)
             .then(value => {
               if (value.data.code === 0) {
                 this.$message({

@@ -60,6 +60,7 @@
         name: "PaperForm",
       data(){
           return{
+            submitType:'post',
             courseList: [],
             paperForm:{
               paperId: null,
@@ -80,20 +81,36 @@
           submitForm(formcname) {
           this.$refs[formcname].validate((valid) => {
             if (valid) {
-              this.$http.post("/paper/merge", JSON.stringify(this.paperForm))
-                .then((res) => {
-                  console.log(res.data)
-                  this.$message.success({showClose: true, message: '新增成功', duration: 2000});
-                  this.$router.push({path: '/paper'})
-                })
-                .catch((err) => {
-                    this.$message({
-                      type: err.toString(),
-                      message: '创建失败'
-                    });
-                  }
-                );
-              // alert('submit!');
+              if (this.submitType === 'post') {
+                this.$http.post("/paper/id", this.paperForm)
+                  .then((res) => {
+                    console.log(res.data)
+                    this.$message.success({showClose: true, message: '新增成功', duration: 2000});
+                    this.$router.push({path: '/paper'})
+                  })
+                  .catch((err) => {
+                      this.$message({
+                        type: err.toString(),
+                        message: '创建失败'
+                      });
+                    }
+                  );
+              } else {
+                this.$http.put("/paper/id", this.paperForm)
+                  .then((res) => {
+                    console.log(res.data)
+                    this.$message.success({showClose: true, message: '修改成功', duration: 2000});
+                    this.$router.push({path: '/paper'})
+                  })
+                  .catch((err) => {
+                      this.$message({
+                        type: err.toString(),
+                        message: '创建失败'
+                      });
+                    }
+                  );
+              }
+
 
             } else {
               this.$message.error({showClose: true, message: '请填写试题', duration: 2000});
@@ -131,6 +148,7 @@
         this.getCourseData()
         if (this.$route.params.paperId != null) {
           this.getPaper(this.$route.params.paperId);
+          this.submitType = 'put'
         }
       }
     }
