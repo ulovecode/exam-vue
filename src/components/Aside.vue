@@ -60,6 +60,9 @@
               <el-menu-item index="1-1">
                 <router-link to="/examlist" class="router-link-active">考试列表</router-link>
               </el-menu-item>
+              <el-menu-item index="1-2">
+              <router-link to="/score" class="router-link-active">已考试卷</router-link>
+            </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>

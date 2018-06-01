@@ -12,7 +12,7 @@ import Paper from '@/components/paper/Paper'
 import Exam from '@/components/exam/Exam'
 import ExamList from '@/components/exam/ExamList'
 import Login from '@/components/user/Login'
-
+import Score from '@/components/score/Score'
 Vue.use(Router)
 
 export default new Router({
@@ -104,7 +104,13 @@ export default new Router({
       path:'/login',
       name:'login',
       component:Login
+    },
+    {
+      path:'/score',
+      name:'score',
+      component:Score
     }
+
 
 
   ]
