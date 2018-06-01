@@ -100,7 +100,10 @@ const getters={
 	},
 	getStudent(state){
 		return state.student;
-	}
+	},
+  getLogin() {
+    return state.logined;
+  }
 };
 
 export default{

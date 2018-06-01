@@ -139,7 +139,5 @@
 </script>
 
 <style>
-  .el-slider{
-    width: 600px;
-  }
+
 </style>
