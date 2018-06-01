@@ -16,6 +16,13 @@ Object.keys(filters).forEach(key => Vue.filter(key, filters[key]))    //加载�
 
 
 router.beforeEach((to, from, next) => {
+  let info = sessionStorage.key(0);
+  if (info != null) {
+    let item = JSON.parse(sessionStorage.getItem(info));
+    stores.state.mutations[info] = item;
+    stores.state.mutations.logined = true;
+  }
+  console.log(stores);
   //全局拦截器的
   if (to.meta.requiresAuth) {  // 判断该路由是否需要登录权限
     if (stores.getters.getLogin) {  // 通过store获取当前的token是否存在
